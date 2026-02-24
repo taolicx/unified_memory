@@ -1,0 +1,21 @@
+metadata_version: "1.0"
+type: "plugin
+name: "astrbot_plugin_unified_memory"
+description: "统一记忆插件 - 结合长期记忆和短期记忆，支持 WebUI 管理"
+author: "lxfight"
+version: "1.0.0"
+repository: "https://github.com/lxfight/astrbot_plugin_unified_memory"
+tags:
+  - "memory"
+  - "rag"
+  - "webui"
+platforms:
+  - "astrbot"
+astrbot_version: "4.0.0"
+requirements:
+  - "faiss-cpu>=1.7.4"
+  - "rank-bm25>=0.2.2"
+  - "fastapi>=0.100.0"
+  - "uvicorn>=0.23.0"
+  - "jinja2>=3.1.2"
+  - "aiofiles>=23.1.0"

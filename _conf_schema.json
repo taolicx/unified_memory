@@ -1,0 +1,115 @@
+{
+  "type": "object",
+  "properties": {
+    "embedding_provider_id": {
+      "type": "string",
+      "description": "向量嵌入模型 ID（留空使用默认）",
+      "default": ""
+    },
+    "llm_provider_id": {
+      "type": "string",
+      "description": "大语言模型 ID（留空使用默认）",
+      "default": ""
+    },
+    "memory_settings": {
+      "type": "object",
+      "description": "记忆配置",
+      "properties": {
+        "short_term": {
+          "type": "object",
+          "description": "短期记忆配置",
+          "properties": {
+            "max_messages": {
+              "type": "number",
+              "description": "短期记忆最大消息数",
+              "default": 50
+            },
+            "summary_threshold": {
+              "type": "number",
+              "description": "触发总结的消息阈值",
+              "default": 10
+            },
+            "enabled": {
+              "type": "boolean",
+              "description": "是否启用短期记忆",
+              "default": true
+            }
+          }
+        },
+        "long_term": {
+          "type": "object",
+          "description": "长期记忆配置",
+          "properties": {
+            "top_k": {
+              "type": "number",
+              "description": "检索返回的记忆数量",
+              "default": 5
+            },
+            "auto_summary": {
+              "type": "boolean",
+              "description": "是否自动总结",
+              "default": true
+            },
+            "forgetting_enabled": {
+              "type": "boolean",
+              "description": "是否启用遗忘机制",
+              "default": true
+            },
+            "forgetting_threshold_days": {
+              "type": "number",
+              "description": "遗忘阈值（天）",
+              "default": 30
+            }
+          }
+        }
+      }
+    },
+    "webui_settings": {
+      "type": "object",
+      "description": "WebUI 配置",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "是否启用 WebUI",
+          "default": true
+        },
+        "host": {
+          "type": "string",
+          "description": "WebUI 监听地址",
+          "default": "127.0.0.1"
+        },
+        "port": {
+          "type": "number",
+          "description": "WebUI 端口",
+          "default": 8080
+        },
+        "access_password": {
+          "type": "string",
+          "description": "访问密码",
+          "default": ""
+        }
+      }
+    },
+    "retrieval_settings": {
+      "type": "object",
+      "description": "检索配置",
+      "properties": {
+        "use_hybrid": {
+          "type": "boolean",
+          "description": "是否使用混合检索",
+          "default": true
+        },
+        "bm25_weight": {
+          "type": "number",
+          "description": "BM25 权重",
+          "default": 0.5
+        },
+        "vector_weight": {
+          "type": "number",
+          "description": "向量检索权重",
+          "default": 0.5
+        }
+      }
+    }
+  }
+}
