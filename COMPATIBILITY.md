@@ -40,9 +40,9 @@
 
 | AstrBot 版本 | 兼容性 | 说明 |
 |-------------|--------|------|
-| 3.4.x | ✅ 完全兼容 | 最低支持版本 |
-| 3.5.x | ✅ 完全兼容 | |
-| 4.0.x | ✅ 完全兼容 | |
+| 3.4.x | ⚠️ 不支持 | 请使用 v0.x 版本插件 |
+| 3.5.x | ⚠️ 不支持 | 请使用 v0.x 版本插件 |
+| 4.0.x | ✅ 完全兼容 | 最低支持版本 |
 | 4.1.x | ✅ 完全兼容 | |
 | 5.0.x | ✅ 完全兼容 | 最高支持版本 |
 
@@ -151,7 +151,7 @@ plugin.register_event_handler("on_message", self.on_message)
 
 安装前请确认：
 
-- [ ] AstrBot 版本 >= 3.4.0
+- [ ] AstrBot 版本 >= 4.0.0
 - [ ] Python 版本 >= 3.8
 - [ ] 已配置 Embedding Provider
 - [ ] 已配置 LLM Provider
@@ -190,4 +190,4 @@ plugin.register_event_handler("on_message", self.on_message)
 2. 检查 AstrBot 和插件版本
 3. 在 GitHub 提交 Issue（附上日志）
 
-**GitHub**: https://github.com/lxfight/astrbot_plugin_unified_memory
+**GitHub**: https://github.com/taolicx/unified_memory

@@ -5,7 +5,6 @@ import asyncio
 import logging
 import numpy as np
 from typing import Any, Dict, List, Optional, Tuple
-from astrbot.api.provider import Provider
 
 from ..base import (
     ConfigManager,
@@ -33,8 +32,8 @@ class MemoryEngine:
         self.faiss_index: Optional[FaissIndex] = None
         self.retriever: Optional[HybridRetriever] = None
         self.summarizer: Optional[MemorySummarizer] = None
-        self._embedding_provider: Optional[Provider] = None
-        self._llm_provider: Optional[Provider] = None
+        self._embedding_provider: Optional[Any] = None
+        self._llm_provider: Optional[Any] = None
         self._initialized = False
         self._lock = asyncio.Lock()
 

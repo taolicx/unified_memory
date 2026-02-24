@@ -2,7 +2,7 @@
 
 [![GitHub](https://img.shields.io/github/license/taolicx/unified_memory)](https://github.com/taolicx/unified_memory)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![AstrBot](https://img.shields.io/badge/AstrBot-3.4.0--5.0.0-green.svg)](https://github.com/Soulter/AstrBot)
+[![AstrBot](https://img.shields.io/badge/AstrBot-4.0.0--5.0.0-green.svg)](https://github.com/Soulter/AstrBot)
 [![GitHub stars](https://img.shields.io/github/stars/taolicx/unified_memory)](https://github.com/taolicx/unified_memory/stargazers)
 
 **AstrBot Unified Memory** 是一个结合了 **LivingMemory** 和 **Mnemosyne** 优势的综合性记忆插件，为 AstrBot 提供完整的记忆管理能力。
@@ -250,7 +250,7 @@ unified_memory/
 | **文本检索** | BM25 |
 | **数据库** | SQLite |
 | **Web 框架** | FastAPI |
-| **AstrBot 版本** | 3.4.0 - 5.0.0 |
+| **AstrBot 版本** | 4.0.0 - 5.0.0 |
 
 ---
 
@@ -291,7 +291,7 @@ unified_memory/
 - 🌐 提供 WebUI 管理界面
 - 🔍 实现混合检索（BM25 + 向量）
 - 🤖 支持智能总结和自动遗忘
-- ✅ 全面兼容性优化（AstrBot 3.4.0-5.0.0）
+- ✅ 全面兼容性优化（AstrBot 4.0.0-5.0.0）
 
 ---
 

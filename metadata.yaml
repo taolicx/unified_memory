@@ -11,7 +11,7 @@ tags:
   - "webui"
 platforms:
   - "astrbot"
-astrbot_version_min: "3.4.0"
+astrbot_version_min: "4.0.0"
 astrbot_version_max: "5.0.0"
 requirements:
   - "faiss-cpu>=1.7.4"

@@ -3,7 +3,6 @@
 """
 import logging
 from typing import Any, Dict, List, Optional, Tuple
-from astrbot.api.provider import ProviderCommand
 
 from ..base import SummarizationError, ConfigManager
 

@@ -7,7 +7,7 @@ import logging
 from typing import Optional
 from astrbot.api import AstrBotConfig
 from astrbot.api.event import filter
-from astrbot.api.plugin import Plugin, ASTRBOT_VERSION
+from astrbot.api.star import Plugin, Star
 
 from .core.managers.memory_engine import MemoryEngine
 from .core.managers.conversation_manager import ConversationManager
@@ -22,9 +22,9 @@ logger = logging.getLogger("astrbot_plugin_unified_memory")
 class UnifiedMemoryPlugin(Plugin):
     """统一记忆插件主类"""
 
-    def __init__(self, config: AstrBotConfig):
-        super().__init__()
-        self.config = config
+    def __init__(self, context):
+        super().__init__(context)
+        self.config = context.get_config()
         self.memory_engine: Optional[MemoryEngine] = None
         self.conversation_manager: Optional[ConversationManager] = None
         self.event_handler: Optional[EventHandler] = None
@@ -112,5 +112,5 @@ class UnifiedMemoryPlugin(Plugin):
 
 
 # 插件导出
-def create_plugin(config: AstrBotConfig) -> UnifiedMemoryPlugin:
-    return UnifiedMemoryPlugin(config)
+def create_plugin(context) -> UnifiedMemoryPlugin:
+    return UnifiedMemoryPlugin(context)
