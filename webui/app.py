@@ -3,6 +3,7 @@ WebUI 应用 - 记忆管理 Web 界面
 """
 import asyncio
 import logging
+import socket
 import json
 from typing import Any, Dict, Optional
 from fastapi import FastAPI, HTTPException, Request, Depends
@@ -16,6 +17,26 @@ from ..base import ConfigManager, WEBUI_TEMPLATE
 from ..managers import MemoryEngine, ConversationManager
 
 logger = logging.getLogger("astrbot_plugin_unified_memory")
+
+
+def is_port_in_use(host: str, port: int) -> bool:
+    """检查端口是否被占用"""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(1)
+        try:
+            result = s.connect_ex((host, port))
+            return result == 0
+        except Exception:
+            return False
+
+
+def find_available_port(host: str, start_port: int, max_attempts: int = 10) -> int:
+    """查找可用端口"""
+    for i in range(max_attempts):
+        port = start_port + i
+        if not is_port_in_use(host, port):
+            return port
+    raise RuntimeError(f"无法在 {host} 上找到可用端口（尝试范围：{start_port}-{start_port + max_attempts - 1}）")
 
 
 class WebUIApp:
@@ -33,8 +54,9 @@ class WebUIApp:
         
         webui_config = config.get_webui_config()
         self.host = webui_config.get("host", "127.0.0.1")
-        self.port = webui_config.get("port", 8080)
+        self.requested_port = webui_config.get("port", 8080)
         self.access_password = webui_config.get("access_password", "")
+        self.actual_port: Optional[int] = None
         
         self.app = FastAPI(title="统一记忆管理")
         self._server: Optional[Server] = None
@@ -264,17 +286,35 @@ class WebUIApp:
 
     async def start(self):
         """启动 WebUI 服务"""
+        # 检查端口是否被占用
+        if is_port_in_use(self.host, self.requested_port):
+            logger.warning(f"端口 {self.requested_port} 已被占用，尝试查找可用端口...")
+            try:
+                self.actual_port = find_available_port(self.host, self.requested_port)
+                logger.info(f"找到可用端口：{self.actual_port}")
+            except RuntimeError as e:
+                logger.error(f"无法找到可用端口：{e}")
+                raise
+        else:
+            self.actual_port = self.requested_port
+        
         config = Config(
             self.app,
             host=self.host,
-            port=self.port,
+            port=self.actual_port,
             log_level="warning"
         )
         self._server = Server(config)
         
         # 在后台启动
         asyncio.create_task(self._server.serve())
-        logger.info(f"WebUI 已启动：http://{self.host}:{self.port}")
+        logger.info(f"WebUI 已启动：http://{self.host}:{self.actual_port}")
+
+    async def get_actual_url(self) -> str:
+        """获取实际访问 URL"""
+        if self.actual_port:
+            return f"http://{self.host}:{self.actual_port}"
+        return f"http://{self.host}:{self.requested_port}"
 
     async def stop(self):
         """停止 WebUI 服务"""

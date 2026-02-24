@@ -3,12 +3,12 @@
   "properties": {
     "embedding_provider_id": {
       "type": "string",
-      "description": "向量嵌入模型 ID（留空使用默认）",
+      "description": "向量嵌入模型 ID（留空使用 AstrBot 默认）",
       "default": ""
     },
     "llm_provider_id": {
       "type": "string",
-      "description": "大语言模型 ID（留空使用默认）",
+      "description": "大语言模型 ID（留空使用 AstrBot 默认）",
       "default": ""
     },
     "memory_settings": {
@@ -22,19 +22,24 @@
             "max_messages": {
               "type": "number",
               "description": "短期记忆最大消息数",
-              "default": 50
+              "default": 50,
+              "minimum": 1,
+              "maximum": 500
             },
             "summary_threshold": {
               "type": "number",
               "description": "触发总结的消息阈值",
-              "default": 10
+              "default": 10,
+              "minimum": 5,
+              "maximum": 100
             },
             "enabled": {
               "type": "boolean",
               "description": "是否启用短期记忆",
               "default": true
             }
-          }
+          },
+          "required": ["max_messages", "summary_threshold", "enabled"]
         },
         "long_term": {
           "type": "object",
@@ -43,7 +48,9 @@
             "top_k": {
               "type": "number",
               "description": "检索返回的记忆数量",
-              "default": 5
+              "default": 5,
+              "minimum": 1,
+              "maximum": 20
             },
             "auto_summary": {
               "type": "boolean",
@@ -58,11 +65,15 @@
             "forgetting_threshold_days": {
               "type": "number",
               "description": "遗忘阈值（天）",
-              "default": 30
+              "default": 30,
+              "minimum": 1,
+              "maximum": 365
             }
-          }
+          },
+          "required": ["top_k", "auto_summary", "forgetting_enabled"]
         }
-      }
+      },
+      "required": ["short_term", "long_term"]
     },
     "webui_settings": {
       "type": "object",
@@ -81,14 +92,17 @@
         "port": {
           "type": "number",
           "description": "WebUI 端口",
-          "default": 8080
+          "default": 8080,
+          "minimum": 1,
+          "maximum": 65535
         },
         "access_password": {
           "type": "string",
-          "description": "访问密码",
+          "description": "访问密码（留空表示无需密码）",
           "default": ""
         }
-      }
+      },
+      "required": ["enabled", "host", "port"]
     },
     "retrieval_settings": {
       "type": "object",
@@ -96,20 +110,26 @@
       "properties": {
         "use_hybrid": {
           "type": "boolean",
-          "description": "是否使用混合检索",
+          "description": "是否使用混合检索（BM25+ 向量）",
           "default": true
         },
         "bm25_weight": {
           "type": "number",
-          "description": "BM25 权重",
-          "default": 0.5
+          "description": "BM25 权重（0-1）",
+          "default": 0.5,
+          "minimum": 0,
+          "maximum": 1
         },
         "vector_weight": {
           "type": "number",
-          "description": "向量检索权重",
-          "default": 0.5
+          "description": "向量检索权重（0-1）",
+          "default": 0.5,
+          "minimum": 0,
+          "maximum": 1
         }
-      }
+      },
+      "required": ["use_hybrid"]
     }
-  }
+  },
+  "required": ["embedding_provider_id", "llm_provider_id"]
 }

@@ -4,11 +4,10 @@
 import logging
 from typing import Optional
 from astrbot.api.event import AstrMessageEvent, MessageChain
-from astrbot.api.event.filter import event_message_type
 from astrbot.api.message_components import Plain
 
-from ..base import ConfigManager
-from ..managers import MemoryEngine, ConversationManager
+from .base import ConfigManager
+from .managers import MemoryEngine, ConversationManager
 
 logger = logging.getLogger("astrbot_plugin_unified_memory")
 
@@ -28,30 +27,16 @@ class EventHandler:
 
     def register_events(self, plugin):
         """注册事件监听器"""
-        # 注册群聊消息监听
+        # 使用通用的 message 事件类型，兼容所有平台
         plugin.register_event_handler(
-            event_message_type("group_message"),
-            self.on_group_message
-        )
-        
-        # 注册私聊消息监听
-        plugin.register_event_handler(
-            event_message_type("private_message"),
-            self.on_private_message
+            "on_message",
+            self.on_message
         )
         
         logger.info("事件监听器已注册")
 
-    async def on_group_message(self, event: AstrMessageEvent):
-        """处理群聊消息"""
-        await self._handle_message(event)
-
-    async def on_private_message(self, event: AstrMessageEvent):
-        """处理私聊消息"""
-        await self._handle_message(event)
-
-    async def _handle_message(self, event: AstrMessageEvent):
-        """处理消息"""
+    async def on_message(self, event: AstrMessageEvent):
+        """处理所有消息"""
         try:
             # 获取会话 ID
             session_id = event.get_session_id()
@@ -109,20 +94,3 @@ class EventHandler:
             # 存储记忆上下文供后续使用
             event.set_extra("retrieved_memories", memory_context)
             logger.debug(f"检索到 {len(memories)} 条相关记忆")
-
-    async def on_bot_response(self, event: AstrMessageEvent, response: str):
-        """处理机器人响应"""
-        try:
-            session_id = event.get_session_id()
-            persona_id = event.get_platform_name()
-            
-            # 添加机器人响应到会话
-            await self.conversation_manager.add_message(
-                session_id,
-                "assistant",
-                response,
-                persona_id
-            )
-            
-        except Exception as e:
-            logger.error(f"处理机器人响应失败：{e}", exc_info=True)

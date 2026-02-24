@@ -2,6 +2,7 @@
 基础组件模块
 """
 from .config import ConfigManager
+from .api_adapter import AstrBotAPIAdapter, api_adapter
 from .constants import (
     MEMORY_TYPE_SHORT_TERM,
     MEMORY_TYPE_LONG_TERM,
@@ -32,6 +33,8 @@ from .exceptions import (
 
 __all__ = [
     "ConfigManager",
+    "AstrBotAPIAdapter",
+    "api_adapter",
     "MEMORY_TYPE_SHORT_TERM",
     "MEMORY_TYPE_LONG_TERM",
     "DEFAULT_CONFIG",

@@ -8,10 +8,12 @@ from typing import Optional
 from astrbot.api import AstrBotConfig
 from astrbot.api.event import filter
 from astrbot.api.plugin import Plugin, ASTRBOT_VERSION
+
 from .core.managers.memory_engine import MemoryEngine
 from .core.managers.conversation_manager import ConversationManager
 from .core.event_handler import EventHandler
 from .core.command_handler import CommandHandler
+from .core.base import api_adapter
 from .webui.app import WebUIApp
 
 logger = logging.getLogger("astrbot_plugin_unified_memory")
@@ -29,12 +31,20 @@ class UnifiedMemoryPlugin(Plugin):
         self.command_handler: Optional[CommandHandler] = None
         self.webui_app: Optional[WebUIApp] = None
         self._initialized = False
+        
+        # 检测 AstrBot 版本
+        api_adapter.detect_version()
 
     async def initialize(self):
         """插件初始化"""
         logger.info("正在初始化统一记忆插件...")
         
         try:
+            # 验证配置
+            from .core.base import ConfigManager
+            config_manager = ConfigManager(self.config)
+            config_manager.validate()
+            
             # 初始化记忆引擎
             self.memory_engine = MemoryEngine(self.config)
             await self.memory_engine.initialize()
@@ -46,20 +56,20 @@ class UnifiedMemoryPlugin(Plugin):
             self.event_handler = EventHandler(
                 self.memory_engine,
                 self.conversation_manager,
-                self.config
+                config_manager
             )
             
             # 初始化命令处理器
             self.command_handler = CommandHandler(
                 self.memory_engine,
                 self.conversation_manager,
-                self.config
+                config_manager
             )
             
-            # 注册事件监听
+            # 注册事件监听（使用兼容方式）
             self.event_handler.register_events(self)
             
-            # 注册命令
+            # 注册命令（使用兼容方式）
             self.command_handler.register_commands(self)
             
             # 启动 WebUI
@@ -67,7 +77,7 @@ class UnifiedMemoryPlugin(Plugin):
                 self.webui_app = WebUIApp(
                     self.memory_engine,
                     self.conversation_manager,
-                    self.config
+                    config_manager
                 )
                 await self.webui_app.start()
                 logger.info(f"WebUI 已启动：http://{self.config.get('webui_settings', {}).get('host', '127.0.0.1')}:{self.config.get('webui_settings', {}).get('port', 8080)}")

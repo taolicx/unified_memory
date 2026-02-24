@@ -1,8 +1,16 @@
+# 核心依赖 - AstrBot 已包含
+# 以下依赖都是常见且轻量的
+
+# 向量检索（必需）
 faiss-cpu>=1.7.4
+
+# 文本检索（必需）
 rank-bm25>=0.2.2
+
+# WebUI（可选，如果不需要 WebUI 可以注释掉）
 fastapi>=0.100.0
 uvicorn>=0.23.0
+starlette>=0.27.0
+
+# 模板引擎（FastAPI 常用）
 jinja2>=3.1.2
-aiofiles>=23.1.0
-python-dotenv>=1.0.0
-httpx>=0.24.0

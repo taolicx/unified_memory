@@ -2,12 +2,12 @@
 命令处理器 - 处理用户命令
 """
 import logging
-from typing import Optional
+from typing import Optional, List
 from astrbot.api.event import AstrMessageEvent, MessageChain
 from astrbot.api.message_components import Plain
 
-from ..base import ConfigManager, COMMAND_PREFIX, HELP_MESSAGE
-from ..managers import MemoryEngine, ConversationManager
+from .base import ConfigManager, COMMAND_PREFIX, HELP_MESSAGE
+from .managers import MemoryEngine, ConversationManager
 
 logger = logging.getLogger("astrbot_plugin_unified_memory")
 
@@ -27,43 +27,33 @@ class CommandHandler:
 
     def register_commands(self, plugin):
         """注册命令"""
-        # 注册所有命令
-        plugin.register_command(
-            ["umem", "umem_help"],
-            self.cmd_help
-        )
-        plugin.register_command(
-            ["umem_status", "umem status"],
-            self.cmd_status
-        )
-        plugin.register_command(
-            ["umem_short", "umem short"],
-            self.cmd_short_term
-        )
-        plugin.register_command(
-            ["umem_long", "umem long"],
-            self.cmd_long_term
-        )
-        plugin.register_command(
-            ["umem_search", "umem search"],
-            self.cmd_search
-        )
-        plugin.register_command(
-            ["umem_edit", "umem edit"],
-            self.cmd_edit
-        )
-        plugin.register_command(
-            ["umem_delete", "umem delete"],
-            self.cmd_delete
-        )
-        plugin.register_command(
-            ["umem_clear", "umem clear"],
-            self.cmd_clear
-        )
-        plugin.register_command(
-            ["umem_webui", "umem webui"],
-            self.cmd_webui
-        )
+        # 使用统一的命令前缀注册，避免与 AstrBot 命令系统冲突
+        # 注册帮助命令
+        plugin.register_command(["umem", "umem_help"], self.cmd_help)
+        
+        # 注册状态命令
+        plugin.register_command(["umem_status", "umem status"], self.cmd_status)
+        
+        # 注册短期记忆命令
+        plugin.register_command(["umem_short", "umem short"], self.cmd_short_term)
+        
+        # 注册长期记忆命令
+        plugin.register_command(["umem_long", "umem long"], self.cmd_long_term)
+        
+        # 注册搜索命令
+        plugin.register_command(["umem_search", "umem search"], self.cmd_search)
+        
+        # 注册编辑命令
+        plugin.register_command(["umem_edit", "umem edit"], self.cmd_edit)
+        
+        # 注册删除命令
+        plugin.register_command(["umem_delete", "umem delete"], self.cmd_delete)
+        
+        # 注册清除命令
+        plugin.register_command(["umem_clear", "umem clear"], self.cmd_clear)
+        
+        # 注册 WebUI 命令
+        plugin.register_command(["umem_webui", "umem webui"], self.cmd_webui)
         
         logger.info("命令已注册")
 
@@ -258,9 +248,16 @@ class CommandHandler:
             if not enabled:
                 return MessageChain([Plain("❌ WebUI 未启用")])
             
+            # 尝试获取实际端口（如果已启动）
+            actual_url = None
+            if hasattr(self.memory_engine, 'webui_app') and self.memory_engine.webui_app:
+                actual_url = await self.memory_engine.webui_app.get_actual_url()
+            
+            url = actual_url or f"http://{host}:{port}"
+            
             text = f"""🌐 WebUI 管理面板
 
-访问地址：http://{host}:{port}
+访问地址：{url}
 
 功能:
 - 查看所有记忆（短期/长期）
@@ -268,6 +265,8 @@ class CommandHandler:
 - 搜索记忆
 - 记忆统计分析
 - 导入/导出记忆
+
+提示：如果端口被占用，插件会自动选择可用端口
 """
             return MessageChain([Plain(text)])
         
