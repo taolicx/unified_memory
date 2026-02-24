@@ -1,8 +1,15 @@
 # AstrBot Plugin Unified Memory - 统一记忆插件
 
-## 📌 功能概述
+[![GitHub](https://img.shields.io/github/license/taolicx/unified_memory)](https://github.com/taolicx/unified_memory)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![AstrBot](https://img.shields.io/badge/AstrBot-3.4.0--5.0.0-green.svg)](https://github.com/Soulter/AstrBot)
+[![GitHub stars](https://img.shields.io/github/stars/taolicx/unified_memory)](https://github.com/taolicx/unified_memory/stargazers)
 
-**Unified Memory** 是一个结合了 **LivingMemory** 和 **Mnemosyne** 优势的综合性记忆插件，为 AstrBot 提供完整的记忆管理能力。
+**AstrBot Unified Memory** 是一个结合了 **LivingMemory** 和 **Mnemosyne** 优势的综合性记忆插件，为 AstrBot 提供完整的记忆管理能力。
+
+---
+
+## 📌 功能概述
 
 ### 核心特性
 
@@ -19,30 +26,50 @@
 
 ## 📦 安装方法
 
-### 步骤 1：复制插件
-
-将插件文件夹放置于 AstrBot 的 `data/plugins` 目录下：
-
-```
-data/
-└── plugins/
-    └── astrbot_plugin_unified_memory/
-```
-
-### 步骤 2：安装依赖
-
-AstrBot 将自动安装 `requirements.txt` 中的依赖，或手动运行：
+### 方法一：Git 安装（推荐）
 
 ```bash
-cd data/plugins/astrbot_plugin_unified_memory
+# 进入 AstrBot 插件目录
+cd AstrBot/data/plugins
+
+# 克隆仓库
+git clone https://github.com/taolicx/unified_memory.git
+
+# 安装依赖
+cd unified_memory
 pip install -r requirements.txt
+
+# 重启 AstrBot
 ```
 
-### 步骤 3：配置 Provider
+**更新插件**：
+```bash
+cd AstrBot/data/plugins/unified_memory
+git pull
+pip install -r requirements.txt --upgrade
+```
 
-在 AstrBot WebUI 中配置：
-- **Embedding Provider**：用于生成向量嵌入
-- **LLM Provider**：用于记忆总结
+### 方法二：手动安装
+
+1. **下载插件**
+   - 访问 https://github.com/taolicx/unified_memory
+   - 点击 **Code** → **Download ZIP**
+   - 解压到 `AstrBot/data/plugins/` 目录
+
+2. **安装依赖**
+   ```bash
+   cd AstrBot/data/plugins/unified_memory
+   pip install -r requirements.txt
+   ```
+
+3. **重启 AstrBot**
+
+### 方法三：通过 AstrBot WebUI（如果支持）
+
+1. 打开 AstrBot WebUI
+2. 进入 **插件管理**
+3. 搜索 `unified_memory`
+4. 点击 **安装**
 
 ---
 
@@ -57,21 +84,23 @@ pip install -r requirements.txt
 | `embedding_provider_id` | 向量嵌入模型 ID | 留空使用默认 |
 | `llm_provider_id` | 大语言模型 ID | 留空使用默认 |
 
-### 记忆配置
+### 完整配置示例
 
 ```json
 {
+  "embedding_provider_id": "",
+  "llm_provider_id": "",
   "memory_settings": {
     "short_term": {
-      "max_messages": 50,        // 短期记忆最大消息数
-      "summary_threshold": 10,   // 触发总结的消息阈值
-      "enabled": true            // 是否启用短期记忆
+      "max_messages": 50,
+      "summary_threshold": 10,
+      "enabled": true
     },
     "long_term": {
-      "top_k": 5,                // 检索返回的记忆数量
-      "auto_summary": true,      // 是否自动总结
-      "forgetting_enabled": true,// 是否启用遗忘机制
-      "forgetting_threshold_days": 30  // 遗忘阈值（天）
+      "top_k": 5,
+      "auto_summary": true,
+      "forgetting_enabled": true,
+      "forgetting_threshold_days": 30
     }
   },
   "webui_settings": {
@@ -88,6 +117,16 @@ pip install -r requirements.txt
 }
 ```
 
+### 配置项说明
+
+| 配置项 | 说明 | 推荐值 |
+|--------|------|--------|
+| `max_messages` | 短期记忆最大消息数 | 50 |
+| `summary_threshold` | 触发总结的消息阈值 | 10 |
+| `top_k` | 检索返回的记忆数量 | 5 |
+| `forgetting_threshold_days` | 遗忘阈值（天） | 30 |
+| `port` | WebUI 访问端口 | 8080 |
+
 ---
 
 ## 🔧 使用方法
@@ -99,7 +138,7 @@ pip install -r requirements.txt
 | `/umem status` | 查看记忆库状态 | `/umem status` |
 | `/umem short` | 查看短期记忆 | `/umem short` |
 | `/umem long [query]` | 查看/搜索长期记忆 | `/umem long` 或 `/umem long 天气` |
-| `/umem edit <id> <content>` | 编辑指定记忆 | `/umem edit 123 这是修改后的内容` |
+| `/umem edit <id> <content>` | 编辑指定记忆 | `/umem edit 123 新内容` |
 | `/umem delete <id>` | 删除指定记忆 | `/umem delete 123` |
 | `/umem search <query> [k]` | 搜索记忆 | `/umem search 今天天气 5` |
 | `/umem clear` | 清除当前会话记忆 | `/umem clear` |
@@ -110,7 +149,7 @@ pip install -r requirements.txt
 
 **访问地址**: http://127.0.0.1:8080（默认端口）
 
-**功能**:
+**功能模块**:
 - 📊 **首页统计**：查看短期/长期记忆数量和会话统计
 - ⚡ **短期记忆**：查看和管理短期工作记忆
 - 🗄️ **长期记忆**：查看、编辑、删除长期记忆
@@ -135,7 +174,7 @@ pip install -r requirements.txt
 ## 🏗️ 核心架构
 
 ```
-astrbot_plugin_unified_memory/
+unified_memory/
 ├── main.py                          # 插件入口
 ├── metadata.yaml                    # 插件元数据
 ├── _conf_schema.json                # 配置 schema
@@ -144,7 +183,8 @@ astrbot_plugin_unified_memory/
 │   ├── base/                        # 基础组件
 │   │   ├── config.py               # 配置管理
 │   │   ├── constants.py            # 常量定义
-│   │   └── exceptions.py           # 异常定义
+│   │   ├── exceptions.py           # 异常定义
+│   │   └── api_adapter.py          # AstrBot API 适配器
 │   ├── managers/
 │   │   ├── memory_engine.py        # 记忆引擎核心
 │   │   └── conversation_manager.py # 会话管理
@@ -189,13 +229,6 @@ astrbot_plugin_unified_memory/
                          定期反思 → 重要性评估 → 遗忘机制
 ```
 
-### 双通道总结
-
-| 通道 | 用途 | 特点 |
-|------|------|------|
-| `canonical_summary` | 检索用 | 事实导向，结构化，便于相似度匹配 |
-| `persona_summary` | 注入用 | 人格风格，自然语言，便于对话融合 |
-
 ### 混合检索流程
 
 ```
@@ -211,44 +244,31 @@ astrbot_plugin_unified_memory/
 | 项目 | 信息 |
 |-----|------|
 | **版本** | 1.0.0 |
-| **许可证** | AGPL-3.0 |
+| **许可证** | MIT |
 | **主要语言** | Python |
 | **向量检索** | Faiss |
 | **文本检索** | BM25 |
 | **数据库** | SQLite |
 | **Web 框架** | FastAPI |
+| **AstrBot 版本** | 3.4.0 - 5.0.0 |
 
 ---
 
-## 🔗 使用说明
+## 📖 文档
 
-1. **首次使用**：
-   - 确保已配置 Embedding Provider 和 LLM Provider
-   - 插件会自动初始化数据库和索引
-
-2. **日常使用**：
-   - 插件会自动捕获对话并管理记忆
-   - 使用命令或 WebUI 查看和管理记忆
-
-3. **记忆编辑**：
-   - 通过 WebUI 可以可视化编辑任何记忆
-   - 使用 `/umem edit` 命令快速编辑
-
-4. **性能优化**：
-   - 定期使用 `/umem status` 检查记忆库状态
-   - 大量记忆时可使用搜索功能快速定位
+- [📥 快速安装](QUICK_INSTALL.md) - 3 分钟快速开始
+- [📚 详细安装指南](INSTALL.md) - 完整安装和配置
+- [🔧 兼容性说明](COMPATIBILITY.md) - 兼容性保证
+- [📝 修复报告](COMPATIBILITY_REPORT.md) - 技术细节
+- [📤 Git 上传指南](GIT_UPLOAD.md) - 如何贡献代码
 
 ---
 
-## 📝 更新日志
+## 🔗 相关链接
 
-### v1.0.0
-- 初始版本发布
-- 整合 LivingMemory 和 Mnemosyne 核心功能
-- 支持短期记忆和长期记忆
-- 提供 WebUI 管理界面
-- 实现混合检索（BM25 + 向量）
-- 支持智能总结和自动遗忘
+- **GitHub**: https://github.com/taolicx/unified_memory
+- **Issues**: https://github.com/taolicx/unified_memory/issues
+- **AstrBot**: https://github.com/Soulter/AstrBot
 
 ---
 
@@ -259,3 +279,21 @@ astrbot_plugin_unified_memory/
 - [astrbot_plugin_mnemosyne](https://github.com/lxfight/astrbot_plugin_mnemosyne)
 
 感谢原作者的精彩工作！
+
+---
+
+## 📝 更新日志
+
+### v1.0.0 (2026-02-24)
+- ✨ 初始版本发布
+- 🔧 整合 LivingMemory 和 Mnemosyne 核心功能
+- 🧠 支持短期记忆和长期记忆
+- 🌐 提供 WebUI 管理界面
+- 🔍 实现混合检索（BM25 + 向量）
+- 🤖 支持智能总结和自动遗忘
+- ✅ 全面兼容性优化（AstrBot 3.4.0-5.0.0）
+
+---
+
+**作者**: taolicx  
+**许可证**: MIT License
